@@ -1,0 +1,14 @@
+--- !User
+name: monty
+password: xxxx
+roles: [customer]
+owns_schemas: [eggs, beans]
+is_system_user: false
+
+
+--- !User
+name: python
+password: xxxx
+roles: [viking]
+owns_schemas: [eggs, beans]
+is_system_user: false

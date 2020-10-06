@@ -32,6 +32,7 @@ setup(
     include_package_data=True,
     packages=find_packages(exclude=('tests*', 'venv')),
     entry_points={'console_scripts': ['red-dwarf = red_dwarf.__main__:main',
-                                      'gatekeeper = redgiant.gatekeeper.__main__:main']},
+                                      'gatekeeper = redgiant.gatekeeper.__main__:main',
+                                      'redscope = redgiant.redscope.__main__:main']},
     python_requires='>=3'
 )

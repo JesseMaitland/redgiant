@@ -6,23 +6,27 @@ from redgiant.terminal.config import RedGiantConfig
 from redgiant.terminal.project import RedGiantProject
 
 
-def parse_cmd_args(args_config: Dict[Tuple[str, str], Dict[str, str]], arg_index: int = 0) -> Namespace:
+def parse_cmd_args(args_config: Dict[Tuple[str, str], Dict[str, str]], arg_index: int = 0, arg_stop_index: int = None) -> Namespace:
     """
     Parse command line args in one call, using a dict as a configuration.
     Args:
         args_config: Dict[Tuple, Dict[str, Any]] according to standard lib ArgumentParser kwargs
         arg_index:   int starting index of the arguments to be parsed from sys.argv
-
+        arg_stop_index: where in the list of sys.argv to stop parsing
     Returns: Namespace
     """
     arg_parser = ArgumentParser()
 
     for command, options in args_config.items():
         arg_parser.add_argument(*command, **options)
-    return arg_parser.parse_args(sys.argv[arg_index:])
+
+    if arg_stop_index:
+        return arg_parser.parse_args(sys.argv[arg_index:arg_stop_index])
+    else:
+        return arg_parser.parse_args(sys.argv[arg_index:])
 
 
-class EntryPoint(ABC):
+class RedGiantEntryPoint(ABC):
     """
     Base class to be used by all program entry points. If specific arguments are to be used for the
     inheriting child class, then the entry_point_args dictionary can be overridden with the format
@@ -44,22 +48,19 @@ class EntryPoint(ABC):
 
         self.config: RedGiantConfig = RedGiantConfig()
         self.args: Namespace = parse_cmd_args(self.entry_point_args, arg_index=3)
-        self.project = RedGiantProject(self.config.get_project_root())
 
     def run(self, action_name: str) -> None:
 
         try:
             action = getattr(self, f"cmd_{action_name}")
-            action()
-        except IndexError:
-            print("A verb must be provided as the second argument")
-            print(f"For object {self.name()} the actions are {action_name}")
-            exit()
 
         except AttributeError:
             print(f"{action_name} is not a valid action for object {self.name()}")
-            print(f"For object {self.name()} the actions are {action_name}")
+            print(f"For object {self.name()} the actions are {self}")
             exit()
+
+        else:
+            action()
 
     @classmethod
     def get_actions(cls) -> List[str]:

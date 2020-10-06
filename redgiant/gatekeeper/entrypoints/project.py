@@ -1,11 +1,11 @@
-from redgiant.terminal.entrypoint import EntryPoint
+from redgiant.gatekeeper.project import GateKeeperEntryPoint
 
 
-class Project(EntryPoint):
+class Project(GateKeeperEntryPoint):
     """
     creates the necessary root directories for the gatekeeper project
     """
     def cmd_new(self) -> None:
-        self.project.init_project("gatekeeper")
+        self.project.init_project()
 
 

@@ -1,7 +1,7 @@
 from itertools import groupby
 from typing import Dict
-from redgiant.scope.schema_introspection.db_objects import DbCatalog
-from redgiant.scope.schema_introspection.db_objects.ownership import Ownership
+from redgiant.redscope.schema_introspection.db_objects import DbCatalog
+from redgiant.redscope.schema_introspection.db_objects.ownership import Ownership
 
 
 def group_ownership(dbc: DbCatalog) -> Dict[str, Ownership]:

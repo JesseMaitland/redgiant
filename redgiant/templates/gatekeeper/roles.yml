@@ -1,0 +1,13 @@
+--- !Role
+name: spam
+groups: [foo_read_only]
+
+
+--- !Role
+name: beans
+groups: [foo_read_only]
+
+
+--- !Role
+name: analyst
+groups: [cds_read_only, bds_read_only]

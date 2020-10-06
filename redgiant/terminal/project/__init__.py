@@ -1,42 +1,28 @@
 import shutil
+from abc import ABC, abstractmethod
 from pathlib import Path
 from jinja2 import PackageLoader, Environment
 
 
-class RedGiantProject:
+class RedGiantProject(ABC):
 
     def __init__(self, root_name: str):
+        self.root = Path.cwd() / root_name
+        self.dirs = {}
 
-        root = Path.cwd().absolute() / root_name
+    def create_root(self):
+        self.root.mkdir(exist_ok=True, parents=True)
 
-        # gatekeeper dirs
-        gatekeeper_root = root / 'gatekeeper'
+    @abstractmethod
+    def get_dir(self, *args, **kwargs) -> Path:
+        pass
 
-        gatekeeper = {
-            'configs': gatekeeper_root / 'configs',
-            'ddl': gatekeeper_root / 'ddl',
-            'ownership': gatekeeper_root / 'ownership',
-            'audits': gatekeeper_root / 'audits',
-        }
+    def clean_dir(self, name: str) -> None:
+        dir_path = self.get_dir(name)
+        shutil.rmtree(dir_path)
+        dir_path.mkdir(parents=True, exist_ok=True)
 
-        self.dirs = {
-            'gatekeeper': gatekeeper
-        }
-
-#        self.config_files = {
-#            'groups': configs / 'groups.yml',
-#            'users': configs / 'users.yml',
-#            'roles': configs / 'roles.yml'
-#        }
-
-    def init_project(self, feature: str):
-        for d in self.dirs[feature].values():
-            d.mkdir(exist_ok=True, parents=True)
-
-    def get_dir(self, feature: str, name: str, *args):
-        base = self.dirs[feature][name]
-
-        if args:
-            base = base.joinpath('/'.join(args))
-
-        return base
+    @staticmethod
+    def get_jinja_env(name: str) -> Environment:
+        loader = PackageLoader(package_name='redgiant', package_path=f'templates/{name}')
+        return Environment(loader=loader, trim_blocks=True, lstrip_blocks=True)

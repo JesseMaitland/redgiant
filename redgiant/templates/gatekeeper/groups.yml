@@ -1,0 +1,32 @@
+--- !Group
+name: foo_read_only
+schemas: [foo, bar, baz]
+permissions: [select]
+
+--- !Group
+name: foo_read_write
+schemas: [foo, bar, baz]
+permissions: [all]
+
+--- !Group
+name: bar_read_only
+schemas: [foo, bar, baz]
+permissions: [select]
+
+--- !Group
+name: bar_read_write
+schemas: [foo, bar, baz]
+permissions: [all]
+
+
+
+--- !Group
+name: bds_read_only
+schemas: [bds]
+permissions: [select]
+
+
+--- !Group
+name: cds_read_only
+schemas: [cds]
+permissions: [select]

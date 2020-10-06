@@ -2,10 +2,10 @@ import pkgutil
 import inspect
 from typing import Dict
 from importlib import import_module
-from redgiant.terminal.entrypoint import EntryPoint, parse_cmd_args
+from redgiant.terminal.entrypoint import RedGiantEntryPoint, parse_cmd_args
 
 
-def collect_entry_points(module_name: str) -> Dict[str, EntryPoint]:
+def collect_entry_points(module_name: str) -> Dict[str, RedGiantEntryPoint]:
 
     entrypoints = []
     for _, name, _ in pkgutil.iter_modules(path=[f"redgiant/{module_name}/entrypoints"]):
@@ -14,7 +14,7 @@ def collect_entry_points(module_name: str) -> Dict[str, EntryPoint]:
 
         for mod_name, obj in inspect.getmembers(module):
 
-            if inspect.isclass(obj) and issubclass(obj, EntryPoint):
+            if inspect.isclass(obj) and issubclass(obj, RedGiantEntryPoint):
 
                 if obj.is_entry_point():
                     entrypoints.append(obj)
@@ -45,7 +45,7 @@ def run_entrypoint(module_name: str) -> None:
         }
     }
 
-    ns = parse_cmd_args(cmds, 1)
+    ns = parse_cmd_args(cmds, 1, 3)
 
     entrypoint = entrypoints[ns.command]
 
