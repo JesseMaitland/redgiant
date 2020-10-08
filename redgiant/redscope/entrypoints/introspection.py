@@ -1,10 +1,9 @@
 from redgiant.terminal.entrypoint import RedGiantEntryPoint
-from redgiant.redscope.project.file_paths import FilePaths
-from redgiant.redscope.schema_introspection.db_introspection import introspect_redshift, DbIntrospection
+# from redgiant.redscope.project.file_paths import FilePaths
+from redgiant.redscope.schema_introspection.db_introspection import introspect_redshift_v2, DbIntrospection
 
 _allowed_introspection_choices = DbIntrospection.allowed_db_objects.copy()
 _allowed_introspection_choices.remove('constraints')
-_allowed_introspection_choices.append('all')
 
 
 class Introspect(RedGiantEntryPoint):
@@ -19,5 +18,6 @@ class Introspect(RedGiantEntryPoint):
 
     def cmd_redshift(self):
         db_connection = self.config.get_db_connection('redshift')
-        db_catalog = introspect_redshift(db_connection, self.args.entity)
+        redshift_schema = introspect_redshift_v2(db_connection, self.args.entity)
 
+        print(redshift_schema.schema('stage').get.table('campaigns').create())

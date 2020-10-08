@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
-from redscope.schema_introspection.db_objects.ddl import DDL
+from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 
 
 class DDLFormatter(ABC):

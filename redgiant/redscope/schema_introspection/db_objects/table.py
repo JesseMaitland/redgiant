@@ -11,22 +11,18 @@ class Table(DDL):
         self.ddl = ddl
         self.constraints = constraints or []
 
-    @property
     def full_name(self) -> str:
         return f"{self.schema}.{self.name}"
 
-    @property
     def file_name(self) -> str:
         return f"{self.name}.sql"
 
-    @property
     def create(self) -> str:
         if self.constraints:
-            return f"CREATE TABLE {self.full_name} \n(\n{self.ddl},\n {self.constraint_ddl}\n);"
+            return f"CREATE TABLE {self.full_name()} \n(\n{self.ddl},\n {self.constraint_ddl}\n);"
         else:
-            return f"CREATE TABLE {self.full_name} \n(\n{self.ddl}\n);"
+            return f"CREATE TABLE {self.full_name()} \n(\n{self.ddl}\n);"
 
-    @property
     def create_if_not_exist(self) -> str:
         if self.constraints:
             return f"CREATE TABLE IF NOT EXISTS {self.full_name} \n(\n{self.ddl},\n {self.constraint_ddl}\n);"
@@ -37,19 +33,15 @@ class Table(DDL):
         schema = schema or self.schema
         return f"CREATE EXTERNAL TABLE IF NOT EXISTS {schema}.{self.name} \n(\n{self.simple_column_list}\n);"
 
-    @property
     def drop(self) -> str:
-        return f"DROP TABLE {self.full_name};"
+        return f"DROP TABLE {self.full_name()};"
 
-    @property
     def drop_if_exist(self) -> str:
-        return f"DROP TABLE IF EXISTS {self.full_name};"
+        return f"DROP TABLE IF EXISTS {self.full_name()};"
 
-    @property
     def constraint_ddl(self) -> str:
         return '\n'.join([c.ddl for c in self.constraints])
 
-    @property
     def simple_column_list(self) -> str:
         lines_to_keep = []
         ddl_lines = self.ddl.split('\n')
@@ -72,7 +64,7 @@ class Table(DDL):
         return columns
 
     def get_simple_ddl(self):
-        return f"CREATE TABLE IF NOT EXISTS {self.full_name}\n(\n{self.simple_column_list}\n);"
+        return f"CREATE TABLE IF NOT EXISTS {self.full_name()}\n(\n{self.simple_column_list()}\n);"
 
     def add_constraint(self, constraint: Constraint) -> None:
         self.constraints.append(constraint)

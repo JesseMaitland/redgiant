@@ -7,4 +7,3 @@ from .user import User
 from .view import View
 from .usergroup import UserGroup
 from .constraint import Constraint
-from .db_catalog import DbCatalog

@@ -9,7 +9,7 @@ class TableFormatter(DDLFormatter):
     def __init__(self, raw_ddl: Tuple[str] = None):
         self.raw_ddl = raw_ddl or ()
 
-    def format(self, raw_ddl: Tuple[str]) -> List[Table]:
+    def format(self, raw_ddl: Tuple[str]) -> Dict[str, Table]:
         self.raw_ddl = raw_ddl
         groups = self.perform_grouping()
         groups = self.concat_lines(groups)

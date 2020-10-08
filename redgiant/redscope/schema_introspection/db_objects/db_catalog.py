@@ -1,3 +1,4 @@
+from itertools import groupby
 from typing import List, Dict
 from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 from redgiant.redscope.schema_introspection.db_objects.schema import Schema
@@ -11,8 +12,22 @@ from redgiant.redscope.schema_introspection.db_objects.udf import UDF
 from redgiant.redscope.schema_introspection.db_objects.ownership import Ownership
 
 
+"""
+Catalog Model
+
+schema
+    tables
+        constraints
+    views
+    functions
+    procedures
+    
+"""
+
 # TODO: review this approach, object could be simple dictionary?
-class DbCatalog:
+
+
+class RedshiftSchema:
 
     def __init__(self,
                  schemas: List[Schema] = None,
@@ -25,111 +40,35 @@ class DbCatalog:
                  udfs: List[UDF] = None,
                  ownership: List[Ownership] = None):
 
-        self._schemas = schemas or {}
-        self._groups = groups or {}
-        self._views = views or {}
-        self._tables = tables or {}
-        self._users = users or {}
-        self._constraints = constraints or {}
-        self._membership = membership or {}
-        self._udfs = udfs or {}
-        self._ownership = ownership or {}
+        self.ddl = {
+            'schemas': {schema.name: schema for schema in schemas},
+            'groups': {group.name: group for group in groups},
+            'users': {user.name: user for user in users},
+            'membership': {member.name: member for member in membership},
+            'ownership': {(f"{o.schema}" if o.db_obj_type == 'schema' else f"{o.schema}.{o.name}"): o for o in ownership}
+        }
 
-        self._schemas = {schema.name: schema for schema in self._schemas}
-        self._groups = {group.name: group for group in self._groups}
-        self._views = {view.name: view for view in self._views}
-        self._tables = {table.full_name: table for table in self._tables}
-        self._users = {user.name: user for user in self._users}
-        self._constraints = {constraint.name: constraint for constraint in self._constraints}
-        self._membership = {member.name: member for member in self._membership}
-        self._udfs = {udf.name: udf for udf in self._udfs}
-        self._ownership = {(f"{o.schema}" if o.db_obj_type == 'schema' else f"{o.schema}.{o.name}"): o for o in self._ownership}
+        """
+        use group by here to group objects below
+        
+        eg.
+        tables by schema
+        
+        for each schema in tables by schema
+            get the schema
+                add the tables
+            
+        """
+        groupings = {'tables': tables, 'views': views, 'udfs': udfs}
+        mapping = {}
 
-    @property
-    def schemas(self) -> List[Schema]:
-        return [schema for schema in self._schemas.values()]
+        for name, ddls in groupings.items():
+            group = {}
+            ddls.sort(key=lambda x: x.schema)
 
-    @property
-    def groups(self) -> List[Schema]:
-        return [group for group in self._groups.values()]
+            for key, group in groupby(ddls, lambda x: x.schema):
+                group[key] = group
 
-    @property
-    def views(self) -> List[View]:
-        return [view for view in self._views.values()]
+            mapping[name] = group
 
-    @property
-    def tables(self) -> List[Table]:
-        return [table for table in self._tables.values()]
-
-    @property
-    def users(self) -> List[User]:
-        return [user for user in self._users.values()]
-
-    @property
-    def constraints(self) -> List[Constraint]:
-        return [constraint for constraint in self._constraints.values()]
-
-    @property
-    def membership(self) -> List[UserGroup]:
-        return [member for member in self._membership.values()]
-
-    @property
-    def udfs(self) -> List[UDF]:
-        return [udf for udf in self._udfs.values()]
-
-    @property
-    def ownership(self) -> List[Ownership]:
-        return [ownership for ownership in self._ownership.values()]
-
-    @property
-    def file_object_names(self) -> List[str]:
-        return ['tables', 'schemas', 'views', 'groups', 'membership', 'users', 'udfs', 'ownership']
-
-    def get_db_objects(self, db_obj_type: str) -> List[DDL]:
-        ddl_objs = getattr(self, f"_{db_obj_type}")
-        return [ddl for ddl in ddl_objs.values()]
-
-    def get_schema(self, name: str) -> Schema:
-        return self._schemas[name]
-
-    def get_group(self, name: str) -> Group:
-        return self._groups[name]
-
-    def get_view(self, name: str) -> View:
-        return self._views[name]
-
-    def get_table(self, name: str) -> Table:
-        return self._tables[name]
-
-    def get_user(self, name: str) -> User:
-        return self._users[name]
-
-    def get_constraint(self, name: str) -> Constraint:
-        return self._constraints[name]
-
-    def get_user_group(self, name: str) -> UserGroup:
-        return self._usergroups[name]
-
-    def get_tables_by_schema(self, schema: str) -> Dict[str, Table]:
-        return {table.full_name: table for table in self.tables if table.schema == schema}
-
-    def get_udf(self, name: str) -> UDF:
-        return self._udfs[name]
-
-    def get_ownership(self, name: str) -> Ownership:
-        return self._ownership[name]
-
-    def get_objects_by_schema(self, schema_name: str) -> Dict:
-        db_objs = {}
-        db_obj_names = ['tables', 'views', 'udfs']
-
-        schema = self.get_schema(schema_name)
-        db_objs[schema.name] = {}
-
-        for db_obj_name in db_obj_names:
-            db_objs[schema.name][db_obj_name] = []
-            for dbo in getattr(self, f"_{db_obj_name}").values():
-                if dbo.schema == schema.name:
-                    db_objs[schema.name][db_obj_name].append(dbo)
-
-        return db_objs
+        self.mapping = mapping
