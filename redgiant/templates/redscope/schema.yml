@@ -1,0 +1,5 @@
+create: CREATE SCHEMA {{schema}};
+create_if_not_exists: CREATE SCHEMA IF NOT EXISTS {{schema}};
+drop: DROP SCHEMA {{schema}};
+drop_if_exists: DROP SCHEMA IF EXISTS {{schema}};
+drop_cascade: DROP SCHEMA {{schema}} CASCADE;

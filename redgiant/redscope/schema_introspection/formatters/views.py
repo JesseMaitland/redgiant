@@ -5,9 +5,19 @@ from redgiant.redscope.schema_introspection.formatters.base_formatter import DDL
 
 class ViewFormatter(DDLFormatter):
 
-    def __init__(self, raw_ddl: Tuple[str] = None):
-        self.raw_ddl = raw_ddl or ()
+    def __init__(self):
+        super().__init__()
 
     def format(self, raw_ddl: Tuple[str]) -> List[View]:
-        self.raw_ddl = raw_ddl
-        return [View(schema=ddl[0], name=ddl[1], ddl=ddl[2]) for ddl in self.raw_ddl]
+
+        template = self.template_env.get_template('view.yml')
+
+        views = []
+        for ddl in raw_ddl:
+            schema, name, content = ddl
+            content = template.render(schema=schema, name=name, content=content)
+            ddl_map = self.map_ddl(content)
+            view = View(schema=schema, name=name, ddl_map=ddl_map)
+            views.append(view)
+
+        return views

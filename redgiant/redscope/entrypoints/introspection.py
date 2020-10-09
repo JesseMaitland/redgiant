@@ -3,7 +3,7 @@ from redgiant.terminal.entrypoint import RedGiantEntryPoint
 from redgiant.redscope.schema_introspection.db_introspection import introspect_redshift_v2, DbIntrospection
 
 _allowed_introspection_choices = DbIntrospection.allowed_db_objects.copy()
-_allowed_introspection_choices.remove('constraints')
+# _allowed_introspection_choices.remove('constraints')
 
 
 class Introspect(RedGiantEntryPoint):
@@ -19,5 +19,9 @@ class Introspect(RedGiantEntryPoint):
     def cmd_redshift(self):
         db_connection = self.config.get_db_connection('redshift')
         redshift_schema = introspect_redshift_v2(db_connection, self.args.entity)
+        ddl = redshift_schema.schema('dds').get.views()
 
-        print(redshift_schema.schema('stage').get.table('campaigns').create())
+        if ddl:
+            print(ddl)
+        else:
+            print("foo")

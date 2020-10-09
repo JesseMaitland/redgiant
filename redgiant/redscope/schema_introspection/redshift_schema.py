@@ -42,13 +42,15 @@ schema
 # desired api redshift_schema.schema(name).get.object/s(name)
 
 class RedshiftSchema:
+    # 'groups', 'users', 'membership', 'ownership'
+    allowed_kwargs = ['schemas']
+    allowed_mappings = ['tables', 'views', 'udfs', 'procedures', 'constraints']
 
     def __init__(self, **kwargs):
 
-        allowed_kwargs = ['schemas', 'groups', 'users', 'membership', 'ownership']
-        self._validate_kwargs(allowed_kwargs, kwargs)
+        self._validate_kwargs(self.allowed_kwargs, kwargs)
 
-        for kwarg in allowed_kwargs:
+        for kwarg in self.allowed_kwargs:
             setattr(self, f"_{kwarg}", kwargs.get(kwarg, {}))
 
         self.schema_mapping = {}
@@ -66,8 +68,7 @@ class RedshiftSchema:
                 raise ValueError(f"redshift schema got unexpected keyword {kwarg}")
 
     def map_schemas(self, **kwargs):
-        allowed_kwargs = ['tables', 'views', 'udfs', 'procedures', 'constraints']
-        self._validate_kwargs(allowed_kwargs, kwargs)
+        self._validate_kwargs(self.allowed_mappings, kwargs)
 
         mapping = {}
         for name, ddls in kwargs.items():  # eg. tables:{table_name: ddl object}

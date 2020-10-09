@@ -19,13 +19,13 @@ class SchemaBox:
         return self._tables
 
     def table(self, name: str) -> DDL:
-        return self._tables[name]
+        return self._tables.get(name, DDL.empty())
 
-    def views(self) -> List[DDL]:
-        return list(self._views.values())
+    def views(self) -> Dict[str, DDL]:
+        return self._views
 
     def view(self, name: str) -> DDL:
-        return self._views[name]
+        return self._views.get(name, DDL.empty())
 
     def udfs(self) -> List[DDL]:
         return list(self._udfs.values())
@@ -42,31 +42,16 @@ class SchemaBox:
 
 class Schema(DDL):
 
-    def __init__(self, name: str):
-        super().__init__(name=name, schema=name)
-        self.schema_box: SchemaBox = None
+    def __init__(self, name: str, ddl_map: Dict[str, str]):
+        super().__init__(name=name, schema=name, ddl_map=ddl_map)
+        self._schema_box: SchemaBox = SchemaBox()
 
     @property
     def get(self) -> SchemaBox:
-        return self.schema_box
+        return self._schema_box
 
     def file_name(self) -> str:
         return f"{self.name}.sql"
 
-    def create(self) -> str:
-        return f"CREATE SCHEMA {self.name};"
-
-    def create_if_not_exist(self) -> str:
-        return f"CREATE SCHEMA IF NOT EXISTS {self.name};"
-
-    def drop(self) -> str:
-        return f"DROP SCHEMA {self.name};"
-
-    def drop_if_exist(self) -> str:
-        return f"DROP SCHEMA IF EXISTS {self.name};"
-
-    def drop_if_exists_cascade(self) -> str:
-        return f"{self.drop_if_exist} CASCADE;"
-
     def set_schema_box(self, schema_box: SchemaBox):
-        self.schema_box = schema_box
+        self._schema_box = schema_box

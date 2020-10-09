@@ -7,10 +7,12 @@ from redgiant.redscope.schema_introspection.formatters.base_formatter import DDL
 from redgiant.redscope.schema_introspection.redshift_schema import RedshiftSchema
 from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 
+#  allowed_db_objects = ['groups', 'schemas', 'users', 'tables', 'views', 'constraints', 'membership', 'udfs', 'ownership']
+
 
 class DbIntrospection:
 
-    allowed_db_objects = ['groups', 'schemas', 'users', 'tables', 'views', 'constraints', 'membership', 'udfs', 'ownership']
+    allowed_db_objects = ['schemas', 'tables', 'views']
 
     def __init__(self, introspection_queries: IntrospectionQueries, db_object: str = ''):
 
@@ -127,10 +129,7 @@ def introspect_redshift_v2(db_connection: connection, object_type: Union[str, Li
     # we don't want to introspect constraints on their own, just remove the value
     # and if the list is empty afterward, we know they tried to introspect constraints
     # without the context of a corresponding table, which doesn't make sense really.
-    try:
-        objects_to_introspect.remove('constraints')
-    except ValueError:
-        pass
+
 
     if not objects_to_introspect:
         raise ValueError("constraints are not allowed to be introspected without reference to a table.")
@@ -148,12 +147,10 @@ def introspect_redshift_v2(db_connection: connection, object_type: Union[str, Li
 
         introspected_objects[object_to_introspect] = db_objects
 
-        try:
-            redshift_schema = RedshiftSchema(schemas=introspected_objects['schemas'])
-            redshift_schema.map_schemas(tables=introspected_objects['tables'])
-        except KeyError:
-            continue
-        else:
-            return redshift_schema
+    redshift_schema = RedshiftSchema(**{key: introspected_objects[key] for key in RedshiftSchema.allowed_kwargs})
+    redshift_schema.map_schemas(tables=introspected_objects['tables'],
+                                views=introspected_objects['views'])
+
+    return redshift_schema
 
 

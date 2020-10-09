@@ -6,7 +6,7 @@ from .constraint import Constraint
 class Table(DDL):
 
     def __init__(self, schema: str, name: str, ddl: str, constraints: List[Constraint] = None):
-        super().__init__(name)
+        super().__init__(name, ddl_map={})
         self.schema = schema
         self.ddl = ddl
         self.constraints = constraints or []
