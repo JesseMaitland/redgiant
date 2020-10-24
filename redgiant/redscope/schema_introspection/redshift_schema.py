@@ -11,35 +11,6 @@ from redgiant.redscope.schema_introspection.db_objects.usergroup import UserGrou
 from redgiant.redscope.schema_introspection.db_objects.udf import UDF
 from redgiant.redscope.schema_introspection.db_objects.ownership import Ownership
 
-"""
-Catalog Model
-
-schema
-    tables
-        constraints
-    views
-    functions
-    procedures
-
-
-    def __init__(self,
-                 schemas: List[Schema] = None,
-                 groups: List[Group] = None,
-                 views: List[View] = None,
-                 tables: List[Table] = None,
-                 users: List[User] = None,
-                 constraints: List[Constraint] = None,
-                 membership: List[UserGroup] = None,
-                 udfs: List[UDF] = None,
-                 ownership: List[Ownership] = None,
-                 procedures: List = None):   # TODO: add ['Procedure']
-
-"""
-
-
-# TODO: review this approach, object could be simple dictionary?
-
-# desired api redshift_schema.schema(name).get.object/s(name)
 
 class RedshiftSchema:
     # 'groups', 'users', 'membership', 'ownership'
@@ -80,20 +51,6 @@ class RedshiftSchema:
                 schema_grouping[schema] = list(group)
 
             mapping[name] = schema_grouping
-
-        # now that we have a mapping, associate the objects with their schemas
-
-        """
-        table:
-            schemas: items
-        views:
-            schemas: items
-            
-        schemas:
-            views: items
-            tables: items
-            
-        """
 
         for schema_name, schema in self.schemas().items():
             schema_mapping = {}  # add the schema to the mapping

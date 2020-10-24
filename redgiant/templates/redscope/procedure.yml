@@ -1,0 +1,4 @@
+create: |
+{{content | indent(2, True)}}
+
+drop: DROP PROCEDURE {{schema}}.{{name}};

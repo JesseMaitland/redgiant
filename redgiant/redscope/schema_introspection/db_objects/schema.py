@@ -15,6 +15,9 @@ class SchemaBox:
         self._udfs = {u.name: u for u in udfs} if udfs else {}
         self._procedures = {p.name: p for p in procedures} if procedures else {}
 
+    def ddl(self) -> List[DDL]:
+        return [i for value in self.__dict__.values() for i in value.values()]
+
     def tables(self) -> Dict[str, DDL]:
         return self._tables
 
@@ -55,3 +58,6 @@ class Schema(DDL):
 
     def set_schema_box(self, schema_box: SchemaBox):
         self._schema_box = schema_box
+
+    def ddl(self) -> List[DDL]:
+        return self._schema_box.ddl()

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict
 
+
 class DDL:
 
     def __init__(self, name: str, ddl_map: Dict[str, str], schema: str = None):
@@ -9,6 +10,7 @@ class DDL:
 
         self.name = name
         self.schema = schema
+
 
         for key, value in ddl_map.items():
             if key in allowed_kwargs:

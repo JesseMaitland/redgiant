@@ -1,9 +1,4 @@
 create: |
-  CREATE VIEW {{schema}}.{{name}} AS
-  {{content | indent(2, True)}};
-
-create_or_replace: |
-  CREATE OR REPLACE VIEW {{schema}}.{{name}} AS
   {{content | indent(2, True)}};
 
 drop: DROP VIEW {{schema}}.{{name}};

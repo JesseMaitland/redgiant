@@ -1,6 +1,7 @@
 from pathlib import Path
 from redgiant.terminal.project import RedGiantProject
-from redgiant.terminal.entrypoint import RedGiantEntryPoint
+from redgiant.terminal import RedGiantSingleActionEntryPoint, RedGiantMultiActionEntryPoint
+from redgiant.redscope.schema_introspection.db_objects import Schema, Table, View, DDL
 
 
 class RedScopeProject(RedGiantProject):
@@ -18,6 +19,12 @@ class RedScopeProject(RedGiantProject):
             permissions: self.root / redscope / permissions
         }
 
+    def get_ddl_filepath(self, ddl: DDL) -> Path:
+        if type(ddl) == Schema:
+            return self.dirs['schemas'] / ddl.schema / ddl.file_name()
+        else:
+            return self.dirs['schemas'] / ddl.schema / f"{ddl.__class__.__name__.lower()}s" / ddl.file_name()
+
     def get_filepath(self, db_object: str, schema: str, name: str) -> Path:
         allowed_db_objects = ['schema', 'table', 'view', 'function', 'procedure']
 
@@ -33,7 +40,6 @@ class RedScopeProject(RedGiantProject):
         new_dir = Path(self.dirs[name].joinpath(args))
         new_dir.mkdir(exist_ok=True, parents=True)
 
-
     def init_project(self):
         for path in self.dirs.values():
             path.mkdir(parents=True, exist_ok=True)
@@ -42,7 +48,17 @@ class RedScopeProject(RedGiantProject):
         self.clean_dir('redscope')
 
 
-class RedScopeEntryPoint(RedGiantEntryPoint):
+class RedScopeSingleActionEntryPoint(RedGiantSingleActionEntryPoint):
+
+    def __init__(self):
+        super().__init__()
+        self.project = RedScopeProject(self.config.get_project_root())
+
+    def action(self) -> None:
+        raise NotImplementedError
+
+
+class RedScopeMultiActionEntryPoint(RedGiantMultiActionEntryPoint):
 
     def __init__(self):
         super().__init__()

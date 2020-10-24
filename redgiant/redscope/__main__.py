@@ -1,8 +1,8 @@
-from redgiant.terminal.discovery import run_entrypoint
+from rambo import run_entrypoint
 
 
 def main():
-    run_entrypoint("redscope")
+    run_entrypoint('redgiant/redscope')
 
 
 if __name__ == '__main__':

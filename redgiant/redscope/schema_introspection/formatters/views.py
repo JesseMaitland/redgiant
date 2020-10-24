@@ -16,6 +16,7 @@ class ViewFormatter(DDLFormatter):
         for ddl in raw_ddl:
             schema, name, content = ddl
             content = template.render(schema=schema, name=name, content=content)
+            print(content)
             ddl_map = self.map_ddl(content)
             view = View(schema=schema, name=name, ddl_map=ddl_map)
             views.append(view)

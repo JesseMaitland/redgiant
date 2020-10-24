@@ -1,7 +1,7 @@
 from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 
 
-class UDF(DDL):
+class Procedure(DDL):
 
     def __init__(self, schema: str, name: str, **kwargs):
         super().__init__(name=name, schema=schema, **kwargs)
