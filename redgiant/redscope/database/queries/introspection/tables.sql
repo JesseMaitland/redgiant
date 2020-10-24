@@ -3,10 +3,10 @@ SELECT ns.nspname AS schema_name,
        c.relname AS table_name,
        a.attname AS column_name,
        a.attnum AS column_order,
-       format_type(a.atttypid, a.atttypmod) AS data_type,
+       upper(format_type(a.atttypid, a.atttypmod)) AS data_type,
        CASE WHEN  ad.adsrc  IS NOT NULL THEN 'DEFAULT ' ||  ad.adsrc ELSE '' END AS default_value,
        CASE WHEN a.attnotnull IS TRUE THEN 'NOT NULL' ELSE '' END AS not_null,
-       CASE format_encoding(a.attencodingtype) WHEN 'none' THEN 'ENCODE RAW' ELSE 'ENCODE ' + format_encoding(a.attencodingtype) END as encoding
+       CASE format_encoding(a.attencodingtype) WHEN 'none' THEN 'ENCODE RAW' ELSE 'ENCODE ' + upper(format_encoding(a.attencodingtype)) END as encoding
   FROM pg_namespace ns
        INNER JOIN pg_class c
           ON ns.oid = c.relnamespace

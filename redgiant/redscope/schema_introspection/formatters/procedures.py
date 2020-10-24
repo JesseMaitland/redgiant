@@ -9,15 +9,9 @@ class ProcedureFormatter(DDLFormatter):
         super().__init__()
 
     def format(self, raw_ddl: Tuple[str]) -> List[Procedure]:
-
-        template = self.template_env.get_template('procedure.yml')
-
         procedures = []
         for ddl in raw_ddl:
             schema, name, content = ddl
-            content = template.render(schema=schema, name=name, content=content)
-            ddl_map = self.map_ddl(content)
-            procedure = Procedure(schema=schema, name=name, ddl_map=ddl_map)
+            procedure = Procedure(schema=schema, name=name, ddl=content)
             procedures.append(procedure)
-
         return procedures

@@ -10,14 +10,9 @@ class UdfFormatter(DDLFormatter):
 
     def format(self, raw_ddl: Tuple[str]) -> List[UDF]:
 
-        template = self.template_env.get_template('udf.yml')
-
         udfs = []
         for ddl in raw_ddl:
             schema, name, content = ddl
-            content = template.render(schema=schema, name=name, content=content)
-            ddl_map = self.map_ddl(content)
-            udf = UDF(schema=schema, name=name, ddl_map=ddl_map)
+            udf = UDF(schema=schema, name=name, ddl=content)
             udfs.append(udf)
-
         return udfs

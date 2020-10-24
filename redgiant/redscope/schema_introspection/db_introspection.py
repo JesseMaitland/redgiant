@@ -12,7 +12,7 @@ from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 
 class DbIntrospection:
 
-    allowed_db_objects = ['schemas', 'tables', 'views', 'udfs', 'procedures']
+    allowed_db_objects = ['schemas', 'tables', 'views', 'udfs', 'procedures', 'constraints']
 
     def __init__(self, introspection_queries: IntrospectionQueries, db_object: str = ''):
 
@@ -71,7 +71,6 @@ def introspect_redshift(db_connection: connection, object_type: Union[str, List[
     # and if the list is empty afterward, we know they tried to introspect constraints
     # without the context of a corresponding table, which doesn't make sense really.
 
-
     if not objects_to_introspect:
         raise ValueError("constraints are not allowed to be introspected without reference to a table.")
 
@@ -92,7 +91,8 @@ def introspect_redshift(db_connection: connection, object_type: Union[str, List[
     redshift_schema.map_schemas(tables=introspected_objects['tables'],
                                 views=introspected_objects['views'],
                                 udfs=introspected_objects['udfs'],
-                                procedures=introspected_objects['procedures'])
+                                procedures=introspected_objects['procedures'],
+                                constraints=introspected_objects['constraints'])
 
     return redshift_schema
 

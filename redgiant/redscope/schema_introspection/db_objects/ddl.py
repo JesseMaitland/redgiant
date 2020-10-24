@@ -1,53 +1,33 @@
-from pathlib import Path
-from typing import Dict
-
 
 class DDL:
 
-    def __init__(self, name: str, ddl_map: Dict[str, str], schema: str = None):
-
-        allowed_kwargs = ['create', 'create_if_not_exists', 'drop', 'drop_if_exists', 'drop_cascade', 'create_external', 'create_or_replace']
+    def __init__(self, name: str, ddl: str, schema: str = None):
 
         self.name = name
         self.schema = schema
-
-
-        for key, value in ddl_map.items():
-            if key in allowed_kwargs:
-                setattr(self, f"_{key}", value)
-            else:
-                raise ValueError(f"DDL got unexpected key word argument {key}")
+        self.ddl = ddl
 
     def __bool__(self) -> bool:
         return True if self.name else False
 
     @classmethod
     def empty(cls):
-        return cls('', '')
+        return cls('', '', '')
 
     def file_name(self) -> str:
         raise NotImplementedError
 
-    def file_key(self) -> Path:
-        raise NotImplementedError
-
     def create(self) -> str:
-        return getattr(self, '_create', '')
-
-    def create_if_not_exists(self) -> str:
-        return getattr(self, '_create_if_not_exists', '')
+        return self.ddl
 
     def drop(self) -> str:
-        return getattr(self, '_drop', '')
+        raise NotImplementedError
 
     def drop_if_exists(self) -> str:
-        return getattr(self, '_drop_if_exists', '')
+        raise NotImplementedError
 
     def drop_cascade(self) -> str:
-        return getattr(self, '_drop_cascade', '')
+        raise NotImplementedError
 
-    def create_external(self) -> str:
-        return getattr(self, '_create_external', '')
-
-    def create_or_replace(self) -> str:
-        return getattr(self, '_create_or_replace', '')
+    def create_external(self, prefix: str) -> str:
+        raise NotImplementedError

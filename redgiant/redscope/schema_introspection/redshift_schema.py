@@ -63,3 +63,4 @@ class RedshiftSchema:
 
             schema_box = SchemaBox(**schema_mapping)
             schema.set_schema_box(schema_box)
+            schema.map_constraints()

@@ -4,31 +4,23 @@ from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
 class Constraint(DDL):
 
     def __init__(self, name: str, schema: str, table: str, ddl: str):
-        super().__init__(name)
-        self.schema = schema
+        super().__init__(name=name, schema=schema, ddl=ddl)
         self.table = table
-        self._ddl = ddl
 
-    @property
-    def file_name(self) -> str:
-        return f"{self.name}.sql"
-
-    @property
     def create(self) -> str:
-        return ""
+        return f"CONSTRAINT {self.name} {self.ddl}"
 
-    @property
-    def create_if_not_exist(self) -> str:
-        return ""
+    def file_name(self) -> str:
+        raise NotImplementedError
 
-    @property
     def drop(self) -> str:
-        return ""
+        raise NotImplementedError
 
-    @property
-    def drop_if_exist(self) -> str:
-        return ""
+    def drop_if_exists(self) -> str:
+        raise NotImplementedError
 
-    @property
-    def ddl(self) -> str:
-        return f"CONSTRAINT {self.name} {self._ddl}"
+    def drop_cascade(self) -> str:
+        raise NotImplementedError
+
+    def create_external(self, prefix: str) -> str:
+        raise NotImplementedError

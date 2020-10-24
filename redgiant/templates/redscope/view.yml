@@ -1,4 +1,0 @@
-create: |
-  {{content | indent(2, True)}};
-
-drop: DROP VIEW {{schema}}.{{name}};
