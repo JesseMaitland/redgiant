@@ -6,7 +6,7 @@ class Project(RedScopeMultiActionEntryPoint):
     discover = True
 
     description = """
-    Base command to interact with the redscope project run 'redscope project -h for more info.'
+    Base command to interact with the redscope project. Run 'redscope project -h for more info.'
     """
 
     def action_new(self):

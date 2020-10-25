@@ -1,8 +1,8 @@
 from itertools import groupby
 from typing import Tuple, List
-from redgiant.redscope.schema_introspection.db_objects import DDL
-from redgiant.redscope.schema_introspection.db_objects.table import Table
-from redgiant.redscope.schema_introspection.formatters.base_formatter import DDLFormatter
+from redgiant.redscope.introspection.ddl import DDL
+from redgiant.redscope.introspection.schema.table import Table
+from redgiant.redscope.introspection.formatters.base_formatter import DDLFormatter
 
 
 class TableFormatter(DDLFormatter):

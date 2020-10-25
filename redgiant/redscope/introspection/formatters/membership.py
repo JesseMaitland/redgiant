@@ -1,7 +1,7 @@
 from typing import Tuple, List, Dict
 from itertools import groupby
-from redgiant.redscope.schema_introspection.db_objects.usergroup import UserGroup
-from redgiant.redscope.schema_introspection.formatters.base_formatter import DDLFormatter
+from redgiant.redscope.introspection.permissions.usergroup import UserGroup
+from redgiant.redscope.introspection.formatters.base_formatter import DDLFormatter
 
 
 class MembershipFormatter(DDLFormatter):

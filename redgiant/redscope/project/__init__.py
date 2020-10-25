@@ -1,7 +1,6 @@
 from pathlib import Path
 from redgiant.terminal.project import RedGiantProject
 from redgiant.terminal import RedGiantSingleActionEntryPoint, RedGiantMultiActionEntryPoint
-from redgiant.redscope.schema_introspection.db_objects import Schema, Table, View, DDL
 
 
 class RedScopeProject(RedGiantProject):
@@ -19,9 +18,14 @@ class RedScopeProject(RedGiantProject):
             permissions: self.root / redscope / permissions
         }
 
-    def get_ddl_filepath(self, ddl: DDL) -> Path:
-        if type(ddl) == Schema:
+    def get_ddl_filepath(self, ddl: 'DDL') -> Path:
+
+        if ddl.__class__.__name__ == 'Schema':
             return self.dirs['schemas'] / ddl.schema / ddl.file_name()
+
+        elif ddl.__class__.__name__ in ['User', 'Group', 'Membership']:
+            return self.dirs['permissions'] / f"{ddl.__class__.__name__.lower()}s" / ddl.file_name()
+
         else:
             return self.dirs['schemas'] / ddl.schema / f"{ddl.__class__.__name__.lower()}s" / ddl.file_name()
 

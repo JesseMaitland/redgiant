@@ -1,4 +1,4 @@
-from redgiant.redscope.schema_introspection.db_objects.ddl import DDL
+from redgiant.redscope.introspection.ddl import DDL
 
 
 class Ownership(DDL):

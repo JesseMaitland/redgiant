@@ -1,7 +1,7 @@
 import sqlparse
 from typing import Tuple, List
-from redgiant.redscope.schema_introspection.db_objects.view import View
-from redgiant.redscope.schema_introspection.formatters.base_formatter import DDLFormatter
+from redgiant.redscope.introspection.schema.view import View
+from redgiant.redscope.introspection.formatters.base_formatter import DDLFormatter
 
 
 class ViewFormatter(DDLFormatter):

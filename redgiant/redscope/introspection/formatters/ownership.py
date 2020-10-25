@@ -1,6 +1,6 @@
 from typing import Tuple, List
-from redgiant.redscope.schema_introspection.db_objects.ownership import Ownership
-from redgiant.redscope.schema_introspection.formatters.base_formatter import DDLFormatter
+from redgiant.redscope.introspection.permissions.ownership import Ownership
+from redgiant.redscope.introspection.formatters.base_formatter import DDLFormatter
 
 
 class OwnershipFormatter(DDLFormatter):
