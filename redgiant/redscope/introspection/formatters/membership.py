@@ -6,21 +6,24 @@ from redgiant.redscope.introspection.formatters.base_formatter import DDLFormatt
 
 class MembershipFormatter(DDLFormatter):
 
-    def __init__(self, raw_ddl: Tuple[str] = None):
-        self.raw_ddl = raw_ddl or ()
-
     def format(self, raw_ddl: Tuple[str]) -> List[UserGroup]:
-        self.raw_ddl = raw_ddl
-        grouping = self.perform_grouping()
-        grouping = {user: [group[1] for group in groups] for user, groups in grouping.items()}
-        return [UserGroup(name=user, groups=groups) for user, groups in grouping.items()]
+        user_groups = []
+        grouping = self.perform_grouping(raw_ddl)
+        template = self.template_env.get_template('groups.sql')
+
+        for user, groups in grouping.items():
+            ddl = template.render(user=user, groups=groups)
+            user_group = UserGroup(name=user, ddl=ddl)
+            user_groups.append(user_group)
+
+        return user_groups
 
     @staticmethod
     def sort_key(row: Tuple[str]) -> str:
         return row[0]
 
-    def perform_grouping(self) -> Dict:
-        sorted_ddl = sorted(self.raw_ddl, key=self.sort_key)
+    def perform_grouping(self, raw_ddl) -> Dict:
+        sorted_ddl = sorted(raw_ddl, key=self.sort_key)
         groups = {}
         for key, group in groupby(sorted_ddl, key=self.sort_key):
             groups[key] = (list(group))

@@ -23,8 +23,11 @@ class RedScopeProject(RedGiantProject):
         if ddl.__class__.__name__ == 'Schema':
             return self.dirs['schemas'] / ddl.schema / ddl.file_name()
 
-        elif ddl.__class__.__name__ in ['User', 'Group', 'Membership']:
+        elif ddl.__class__.__name__ in ['User', 'Group']:
             return self.dirs['permissions'] / f"{ddl.__class__.__name__.lower()}s" / ddl.file_name()
+
+        elif ddl.__class__.__name__ == 'UserGroup':
+            return self.dirs['permissions'] / 'membership' / ddl.file_name()
 
         else:
             return self.dirs['schemas'] / ddl.schema / f"{ddl.__class__.__name__.lower()}s" / ddl.file_name()
