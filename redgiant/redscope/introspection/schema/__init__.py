@@ -8,13 +8,11 @@ class PermissionsBox:
     def __init__(self,
                  users: Dict = None,
                  groups: Dict = None,
-                 membership: Dict = None,
-                 ownership: Dict = None) -> None:
+                 membership: Dict = None) -> None:
 
         self._users = {u.name: u for u in users} if users else {}
         self._groups = {g.name: g for g in groups} if groups else {}
         self._membership = {m.name: m for m in membership} if membership else {}
-        self._ownership = {o.name: o for o in ownership} if ownership else {}
 
     @property
     def get(self) -> 'PermissionsBox':
@@ -41,12 +39,6 @@ class PermissionsBox:
     def membership(self, name: str) -> DDL:
         return self._membership.get(name, DDL.empty())
 
-    def ownerships(self) -> Dict[str, DDL]:
-        return self._ownership
-
-    def ownership(self, name: str) -> DDL:
-        return self._ownership.get(name, DDL.empty())
-
 
 class SchemaBox:
 
@@ -55,12 +47,14 @@ class SchemaBox:
                  views: Dict = None,
                  udfs: Dict = None,
                  procedures: Dict = None,
-                 constraints: Dict = None) -> None:
+                 constraints: Dict = None,
+                 ownership: Dict = None) -> None:
         self._tables = {t.name: t for t in tables} if tables else {}
         self._views = {v.name: v for v in views} if views else {}
         self._udfs = {u.name: u for u in udfs} if udfs else {}
         self._procedures = {p.name: p for p in procedures} if procedures else {}
         self._constraints = {c.name: c for c in constraints} if constraints else {}
+        self._ownership = {o.name: o for o in ownership} if ownership else {}
 
     def ddl(self) -> List[DDL]:
         return [i for value in self.__dict__.values() for i in value.values()]
@@ -94,6 +88,12 @@ class SchemaBox:
 
     def constraint(self, name: str) -> DDL:
         return self._constraints.get(name, DDL.empty())
+
+    def ownerships(self) -> Dict[str, DDL]:
+        return self._ownership
+
+    def ownership(self, name: str) -> DDL:
+        return self._ownership.get(name, DDL.empty())
 
 
 class Schema(DDL):
@@ -135,8 +135,8 @@ class Schema(DDL):
 
 
 class RedshiftSchema:
-    # 'groups', 'users', 'membership', 'ownership'
-    schema_mapping_keys = ['tables', 'views', 'udfs', 'procedures', 'constraints']
+
+    schema_mapping_keys = ['tables', 'views', 'udfs', 'procedures', 'constraints', 'ownership']
     permission_mapping_keys = ['users', 'groups', 'membership']
     allowed_kwargs = ['schemas']
 

@@ -18,7 +18,8 @@ SCHEMA_INTROSPECTION_OBJECTS = [
     'views',
     'procedures',
     'udfs',
-    'constraints'
+    'constraints',
+    'ownership'
 ]
 
 PERMISSION_INTROSPECTION_OBJECTS = [
